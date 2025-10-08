@@ -6,8 +6,8 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.io.Decoders; // NEW import for Base64 decoding
-import io.jsonwebtoken.security.SignatureException; // This is the correct exception for signature issues
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +15,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.PostConstruct; // Keep this, but we might need to add a dependency
-import javax.crypto.SecretKey; // NEW import for SecretKey
+import jakarta.annotation.PostConstruct;
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
 
     private final JwtConfig jwtConfig;
-    private SecretKey key; // Changed Key to SecretKey
+    private SecretKey key;
 
     @Autowired
     public JwtTokenProvider(JwtConfig jwtConfig) {
@@ -34,30 +34,8 @@ public class JwtTokenProvider {
 
     @PostConstruct
     public void init() {
-        // Decode the Base64 secret from jwtConfig and build the SecretKey
-        // The secret should be a Base64 encoded string for newer JJWT versions
-        this.key = Jwts.SIG.HS512.key().build(); // Creates a new random HS512 key
-        // OR if your secret from jwtConfig is a Base64 encoded string:
-        // this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtConfig.getSecret()));
-        // For HS512, your secret should be at least 64 bytes (512 bits) long after decoding.
-        // If your secret in application.properties is just a string, it's better to ensure it's long enough
-        // and ideally Base64 encoded for production. For simple string, Keys.hmacShaKeyFor is still valid
-        // but it's important to use a strong secret.
-        // Let's assume for now your secret is a raw string and we'll use Jwts.SIG.HS512.key().build()
-        // or a safe way to convert your secret string to bytes.
-        // A common and robust way for a secret string from config:
-        // this.key = Keys.hmacShaKeyFor(jwtConfig.getSecret().getBytes(java.nio.charset.StandardCharsets.UTF_8));
-        // This is still valid if your secret is just a string.
-
-        // To be compliant with the latest recommendations, the secret should be sufficiently long and
-        // ideally derived from a Base64 encoded string from properties.
-        // Let's use the most robust approach for a string secret from config:
+        this.key = Jwts.SIG.HS512.key().build();
         this.key = io.jsonwebtoken.security.Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtConfig.getSecret()));
-        // Make sure your jwt.secret in application.properties is a Base64 encoded string!
-        // E.g., generate a key:
-        // String secret = io.jsonwebtoken.security.Keys.secretKeyFor(io.jsonwebtoken.SignatureAlgorithm.HS512).getEncoded();
-        // Base64.getEncoder().encodeToString(secret);
-        // And put that Base64 string in your application.properties
     }
 
     /**
@@ -73,11 +51,11 @@ public class JwtTokenProvider {
                 .collect(Collectors.joining(","));
 
         return Jwts.builder()
-                .subject(username) // Use subject() instead of setSubject()
+                .subject(username)
                 .claim("roles", roles)
-                .issuedAt(now)     // Use issuedAt() instead of setIssuedAt()
-                .expiration(expiryDate) // Use expiration() instead of setExpiration()
-                .signWith(key)     // Algorithm inferred from key (HS512)
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .signWith(key)
                 .compact();
     }
 
@@ -116,11 +94,11 @@ public class JwtTokenProvider {
      * Get username from JWT token
      */
     public String getUsernameFromToken(String token) {
-        Claims claims = Jwts.parser() // Use Jwts.parser()
-                .verifyWith(key)     // Use verifyWith() instead of setSigningKey()
+        Claims claims = Jwts.parser()
+                .verifyWith(key)
                 .build()
-                .parseSignedClaims(token) // Use parseSignedClaims() instead of parseClaimsJws()
-                .getPayload(); // Use getPayload() instead of getBody()
+                .parseSignedClaims(token)
+                .getPayload();
 
         return claims.getSubject();
     }
@@ -156,7 +134,7 @@ public class JwtTokenProvider {
             log.error("Unsupported JWT token: {}", ex.getMessage());
         } catch (IllegalArgumentException ex) {
             log.error("JWT claims string is empty: {}", ex.getMessage());
-        } catch (SignatureException ex) { // Use io.jsonwebtoken.security.SignatureException
+        } catch (SignatureException ex) {
             log.error("JWT signature validation failed: {}", ex.getMessage());
         }
         return false;
