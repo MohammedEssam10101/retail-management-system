@@ -28,13 +28,13 @@ public interface ProductRepository extends JpaRepository<Product, Long>,
     @Query("SELECT p FROM Product p WHERE p.active = true AND p.deletedAt IS NULL")
     Page<Product> findAllActiveProducts(Pageable pageable);
 
-    @Query("SELECT p FROM Product p WHERE p.category = :category AND p.active = true AND p.deletedAT IS NULL")
+    @Query("SELECT p FROM Product p WHERE p.category = :category AND p.active = true AND p.deletedAt IS NULL")
     List<Product> findByCategory(@Param("category") String category);
 
     @Query("SELECT DISTINCT p.category FROM Product p WHERE p.active = true AND p.deletedAt IS NULL")
     List<String> findAllCategories();
 
-    @Query("SELECT p FROM Product WHERE p.active = true AND p.deletedAt IS NULL AND (" +
+    @Query("SELECT p FROM Product p WHERE p.active = true AND p.deletedAt IS NULL AND (" +
             "LOWER(p.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
             "LOWER(p.sku) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
             "LOWER(p.category) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")

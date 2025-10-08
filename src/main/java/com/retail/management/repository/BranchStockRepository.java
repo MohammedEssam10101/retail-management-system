@@ -18,7 +18,7 @@ public interface BranchStockRepository extends JpaRepository<BranchStock, Long> 
 
     List<BranchStock> findByProductId(Long productId);
 
-    @Query("SELECT bs FROM BranchStock bs WHERE bs.branchId = :branchId AND bs.quantity < bs.product.lowStockThreshold")
+    @Query("SELECT bs FROM BranchStock bs WHERE bs.branch.id = :branchId AND bs.quantity < bs.product.lowStockThreshold")
     List<BranchStock> findLowStockByBranch(@Param("branchId") Long branchId);
 
     @Query("SELECT bs FROM BranchStock bs WHERE bs.quantity = 0")
@@ -30,7 +30,7 @@ public interface BranchStockRepository extends JpaRepository<BranchStock, Long> 
     @Query("SELECT bs FROM BranchStock bs WHERE bs.branch.id = :branchId AND bs.quantity > 0")
     List<BranchStock> findAvailableStockByBranch(@Param("branchId") Long branchId);
 
-    @Query("SELECT bs FROM BranchStock WHERE bs.branch.id = :branchId " +
-            "ORDER BY bs.LastRestockedAt DESC")
+    @Query("SELECT bs FROM BranchStock bs WHERE bs.branch.id = :branchId " +
+            "ORDER BY bs.lastRestockedAt DESC")
     List<BranchStock> findRecentlyRestockedByBranch(@Param("branchId") Long branchId);
 }

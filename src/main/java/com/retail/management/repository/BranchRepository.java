@@ -30,8 +30,8 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
     List<Branch> findActiveBranchesByCity(@Param("city") String city);
 
     @Query("SELECT b FROM Branch b WHERE b.deletedAt IS NULL AND (" +
-            "LOWER(b.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR" +
-            "LOWER(b.code) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR" +
+            "LOWER(b.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(b.code) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
             "LOWER(b.city) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")
     Page<Branch> searchBranches(@Param("searchTerm") String searchTerm, Pageable pageable);
 }
