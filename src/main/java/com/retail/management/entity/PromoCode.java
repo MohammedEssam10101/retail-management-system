@@ -4,6 +4,8 @@ import com.retail.management.enums.DiscountType;
 import com.retail.management.enums.PromoCodeStatus;
 import lombok.*;
 import jakarta.persistence.*;
+import lombok.experimental.SuperBuilder;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,7 +18,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class PromoCode extends BaseEntity {
 
     @Column(name = "code", nullable = false, unique = true, length = 50)

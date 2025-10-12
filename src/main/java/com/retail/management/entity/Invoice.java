@@ -3,6 +3,8 @@ package com.retail.management.entity;
 import com.retail.management.enums.InvoiceStatus;
 import lombok.*;
 import jakarta.persistence.*;
+import lombok.experimental.SuperBuilder;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,7 +17,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class Invoice extends BaseEntity {
 
     @Column(name = "invoice_number", nullable = false, unique = true, length = 50)

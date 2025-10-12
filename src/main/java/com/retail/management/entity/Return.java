@@ -3,6 +3,8 @@ package com.retail.management.entity;
 import com.retail.management.enums.ReturnStatus;
 import lombok.*;
 import jakarta.persistence.*;
+import lombok.experimental.SuperBuilder;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class Return extends BaseEntity {
 
     @Column(name = "return_number", nullable = false, unique = true, length = 50)
