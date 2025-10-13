@@ -21,6 +21,10 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, JpaSp
 
     Optional<Customer> findByEmail(String email);
 
+    Boolean existsByPhone(String phone);
+
+    Boolean existsByEmail(String email);
+
     @Query("SELECT c FROM Customer c WHERE c.isWalkIn = true AND c.deletedAt IS NULL")
     List<Customer> findAllRegisteredCustomers();
 
