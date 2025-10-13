@@ -21,7 +21,7 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
     List<Branch> findByActiveTrue();
 
     @Query("SELECT b FROM Branch b WHERE b.active = true AND b.deletedAt IS NULL")
-    List<Branch> FindAllActiveBranches();
+    List<Branch> findAllActiveBranches();
 
     @Query("SELECT b FROM Branch b WHERE b.deletedAt IS NULL")
     Page<Branch> findAllNotDeleted(Pageable pageable);
