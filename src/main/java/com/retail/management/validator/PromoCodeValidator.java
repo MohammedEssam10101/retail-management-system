@@ -60,4 +60,45 @@ public class PromoCodeValidator implements ConstraintValidator<ValidPromoCode, S
 
         return true;
     }
+
+    /**
+     * Validate promo code existence and status
+     */
+    public PromoCode validatePromoCode(String code) {
+        Optional<PromoCode> promoCodeOpt = promoCodeRepository.findByCode(code);
+
+        if (promoCodeOpt.isEmpty()) {
+            throw new InvalidPromoCodeException("Promo code not found: " + code);
+        }
+
+        PromoCode promoCode = promoCodeOpt.get();
+
+        // Check if active
+        if (!promoCode.getActive()) {
+            throw new InvalidPromoCodeException("Promo code is inactive");
+        }
+
+        // Check status
+        if (promoCode.getStatus() != PromoCodeStatus.ACTIVE) {
+            throw new InvalidPromoCodeException("Promo code is not active");
+        }
+
+        // Check validity dates
+        LocalDate today = LocalDate.now();
+        if (today.isBefore(promoCode.getValidFrom())) {
+            throw new InvalidPromoCodeException("Promo code is not yet valid");
+        }
+
+        if (today.isAfter(promoCode.getValidUntil())) {
+            throw new InvalidPromoCodeException("Promo code has expired");
+        }
+
+        // Check usage limit
+        if (promoCode.getUsageLimit() != null &&
+                promoCode.getTimesUsed() >= promoCode.getUsageLimit()) {
+            throw new InvalidPromoCodeException("Promo code usage limit reached");
+        }
+
+        return promoCode;
+    }
 }
