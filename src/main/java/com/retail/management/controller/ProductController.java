@@ -32,7 +32,8 @@ public class ProductController {
     private final ProductService productService;
 //    private final FileStorageService fileStorageService;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @Operation(summary = "Create product", description = "Create a new product with optional image")
     public ResponseEntity<ApiResponse<ProductResponse>> createProduct(
