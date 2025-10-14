@@ -34,7 +34,6 @@ public class JwtTokenProvider {
 
     @PostConstruct
     public void init() {
-        this.key = Jwts.SIG.HS512.key().build();
         this.key = io.jsonwebtoken.security.Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtConfig.getSecret()));
     }
 
